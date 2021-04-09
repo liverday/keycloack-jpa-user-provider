@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  keycloak:
+    build: .
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: teste123
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USERNAME: liverday
+      DB_PASSWORD: teste123
+      DB_DATABASE: keycloak
+      DB_SCHEMA: public
