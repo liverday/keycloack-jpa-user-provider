@@ -1,5 +1,6 @@
-package valemobi.auth;
+package com.valemobi.auth.providers.userStorage;
 
+import com.valemobi.auth.model.User;
 import lombok.extern.jbosslog.JBossLog;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.jpa.HibernatePersistenceProvider;
@@ -10,9 +11,10 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.provider.ProviderConfigurationBuilder;
-import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.UserStorageProviderFactory;
-import valemobi.auth.dao.implementations.HibernateUserDAO;
+import com.valemobi.auth.dao.implementations.HibernateUserDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.SharedCacheMode;
@@ -26,18 +28,19 @@ import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.*;
 
-import static valemobi.auth.config.FactoryConfiguration.DB_HOST_KEY;
-import static valemobi.auth.config.FactoryConfiguration.DB_PORT_KEY;
-import static valemobi.auth.config.FactoryConfiguration.DB_DATABASE_KEY;
-import static valemobi.auth.config.FactoryConfiguration.DB_USERNAME_KEY;
-import static valemobi.auth.config.FactoryConfiguration.DB_PASSWORD_KEY;
-import static valemobi.auth.config.FactoryConfiguration.DB_CONNECTION_NAME_KEY;
+import static com.valemobi.auth.config.FactoryConfiguration.DB_HOST_KEY;
+import static com.valemobi.auth.config.FactoryConfiguration.DB_PORT_KEY;
+import static com.valemobi.auth.config.FactoryConfiguration.DB_DATABASE_KEY;
+import static com.valemobi.auth.config.FactoryConfiguration.DB_USERNAME_KEY;
+import static com.valemobi.auth.config.FactoryConfiguration.DB_PASSWORD_KEY;
+import static com.valemobi.auth.config.FactoryConfiguration.DB_CONNECTION_NAME_KEY;
 
 @JBossLog
 public class CustomUserStorageProviderFactory implements UserStorageProviderFactory<CustomUserStorageProvider> {
     public final int PORT_LIMIT = 64 * 1024;
     Map<String, Object> properties;
     Map<String, EntityManagerFactory> entityManagerFactories = new HashMap<>();
+    Logger logger = LoggerFactory.getLogger(CustomUserStorageProviderFactory.class);
 
     protected final List<ProviderConfigProperty> configMetadata;
 
@@ -105,7 +108,7 @@ public class CustomUserStorageProviderFactory implements UserStorageProviderFact
             properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
             properties.put("hibernate.connection.driver_class", "org.postgresql.Driver");
             properties.put("hibernate.connection.url",
-                    String.format("jdbc:postgres://%s:%s/%s",
+                    String.format("jdbc:postgresql://%s:%s/%s",
                             config.getFirst(DB_HOST_KEY),
                             config.getFirst(DB_PORT_KEY),
                             config.getFirst(DB_DATABASE_KEY)));
@@ -114,6 +117,8 @@ public class CustomUserStorageProviderFactory implements UserStorageProviderFact
             properties.put("hibernate.show-sql", "true");
             properties.put("hibernate.archive.autodetection", "class, hbm");
             properties.put("hibernate.connection.autocommit", "true");
+
+            logger.info("properties: {}", properties);
 
             entityManagerFactory = new HibernatePersistenceProvider().createContainerEntityManagerFactory(getPersistenceUnitInfo("h2userstorage"), properties);
             entityManagerFactories.put(dbConnectionName, entityManagerFactory);
@@ -196,6 +201,7 @@ public class CustomUserStorageProviderFactory implements UserStorageProviderFact
             @Override
             public List<String> getManagedClassNames() {
                 List<String> managedClasses = new LinkedList<>();
+                managedClasses.add(User.class.getName());
                 return managedClasses;
             }
 

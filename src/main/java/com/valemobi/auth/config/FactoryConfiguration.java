@@ -1,4 +1,4 @@
-package valemobi.auth.config;
+package com.valemobi.auth.config;
 
 public class FactoryConfiguration {
     // cosntantes para as chaves do formulário de criação de provider

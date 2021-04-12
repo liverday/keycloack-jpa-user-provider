@@ -1,6 +1,6 @@
-package valemobi.auth.dao;
+package com.valemobi.auth.dao;
 
-import valemobi.auth.model.User;
+import com.valemobi.auth.model.User;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -10,12 +10,15 @@ public interface IUserDAO {
     EntityManager getEntityManager();
 
     List<User> findAll();
-    List<User> findAll(Integer page, Integer size);
-    List<User> count();
+    List<User> findAll(Integer firstResult, Integer maxResults);
+    Long count();
 
     Optional<User> findUserById(String id);
     Optional<User> findUserByUserName(String userName);
     Optional<User> findUserByEmail(String email);
+
+    List<User> searchUserByUserNameOrEmail(String search);
+    List<User> searchUserByUserNameOrEmail(String search, Integer firstResult, Integer maxResults);
 
     User create(User user);
     void remove(User user);

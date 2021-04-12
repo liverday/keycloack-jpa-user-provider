@@ -1,14 +1,35 @@
 version: '3'
 
+networks:
+  keycloak:
+    external:
+      name: keycloak-net
+
 services:
+  postgres:
+    image: postgres:9.6
+    environment:
+      POSTGRES_PASSWORD: p0stgr3s
+    ports:
+      - "5432:5432"
+    volumes:
+      - ~/postgres/data:/var/lib/postgresql/data
+    networks:
+      - keycloak
   keycloak:
     build: .
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: teste123
-      DB_HOST: localhost
-      DB_PORT: 5432
-      DB_USERNAME: liverday
-      DB_PASSWORD: teste123
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_USER: postgres
+      DB_PASSWORD: p0stgr3s
       DB_DATABASE: keycloak
       DB_SCHEMA: public
+    ports:
+      - 8080:8080
+    networks:
+      - keycloak
+    depends_on:
+      - postgres

@@ -1,1 +1,1 @@
-valemobi.auth.CustomUserStorageProviderFactory
+com.valemobi.auth.providers.userStorage.CustomUserStorageProviderFactory

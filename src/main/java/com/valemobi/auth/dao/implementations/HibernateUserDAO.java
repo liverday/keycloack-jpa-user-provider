@@ -1,9 +1,9 @@
-package valemobi.auth.dao.implementations;
+package com.valemobi.auth.dao.implementations;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import valemobi.auth.dao.IUserDAO;
-import valemobi.auth.model.User;
+import com.valemobi.auth.dao.IUserDAO;
+import com.valemobi.auth.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -31,20 +31,22 @@ public class HibernateUserDAO implements IUserDAO {
     }
 
     @Override
-    public List<User> findAll(Integer page, Integer size) {
-        logger.info("findAll({}, {})", page, size);
+    public List<User> findAll(Integer firstResult, Integer maxResults) {
+        logger.info("findAll({}, {})", firstResult, maxResults);
         TypedQuery<User> query = em.createNamedQuery("getUsers", User.class);
-        if (page != null && size != null) {
-            query.setFirstResult(page * size);
-            query.setMaxResults(size);
+        if (firstResult != null) {
+            query.setFirstResult(firstResult);
         }
+        if (maxResults != null) {
+            query.setMaxResults(maxResults);
+        }
+        query.setParameter("search", "%");
         return query.getResultList();
     }
 
     @Override
-    public List<User> count() {
-        TypedQuery<User> query = em.createNamedQuery("getUsers", User.class);
-        return query.getResultList();
+    public Long count() {
+        return em.createNamedQuery("getUsersCount", Long.class).getSingleResult();
     }
 
     @Override
@@ -68,6 +70,26 @@ public class HibernateUserDAO implements IUserDAO {
         TypedQuery<User> query = em.createNamedQuery("getUserByEmail", User.class);
         query.setParameter("email", email);
         return query.getResultList().stream().findFirst();
+    }
+
+    @Override
+    public List<User> searchUserByUserNameOrEmail(String search) {
+        logger.info("searchUserByUserNameOrEmail({})", search);
+        return searchUserByUserNameOrEmail(search, null, null);
+    }
+
+    @Override
+    public List<User> searchUserByUserNameOrEmail(String search, Integer firstResult, Integer maxResults) {
+        logger.info("searchUserByUserNameOrEmail({}, {}, {})", search, firstResult, maxResults);
+        TypedQuery<User> query = em.createNamedQuery("getUsers", User.class);
+        query.setParameter("search", "%" + search + "%");
+        if (firstResult != null) {
+            query.setFirstResult(firstResult);
+        }
+        if (maxResults != null) {
+            query.setMaxResults(maxResults);
+        }
+        return query.getResultList();
     }
 
     @Override

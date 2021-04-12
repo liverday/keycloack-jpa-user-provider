@@ -1,4 +1,4 @@
-package valemobi.auth;
+package com.valemobi.auth.providers.userStorage;
 
 import org.keycloak.component.ComponentModel;
 import org.keycloak.credential.CredentialInput;
@@ -7,17 +7,19 @@ import org.keycloak.credential.CredentialInputValidator;
 import org.keycloak.models.*;
 import org.keycloak.models.cache.CachedUserModel;
 import org.keycloak.models.credential.PasswordCredentialModel;
+import org.keycloak.storage.StorageId;
 import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.user.UserLookupProvider;
 import org.keycloak.storage.user.UserQueryProvider;
 import org.keycloak.storage.user.UserRegistrationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import valemobi.auth.dao.IUserDAO;
-import valemobi.auth.model.User;
-import valemobi.auth.representations.KeycloakUserRepresentation;
+import com.valemobi.auth.dao.IUserDAO;
+import com.valemobi.auth.model.User;
+import com.valemobi.auth.representations.KeycloakUserRepresentation;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CustomUserStorageProvider implements UserStorageProvider,
         UserLookupProvider,
@@ -116,54 +118,91 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     }
 
     @Override
-    public UserModel getUserById(String id, RealmModel realm) {
-        return null;
+    public UserModel getUserById(String keycloakId, RealmModel realm) {
+        logger.info("getUserById({}, {})", keycloakId, realm);
+        String id = StorageId.externalId(keycloakId);
+        Optional<User> user = userDAO.findUserById(id);
+        if (user.isEmpty())
+            return null;
+
+        return getUserRepresentation(user.get(), realm);
     }
 
     @Override
     public UserModel getUserByUsername(String username, RealmModel realm) {
-        return null;
+        Optional<User> user = userDAO.findUserByUserName(username);
+        if (user.isEmpty())
+            return null;
+
+        return getUserRepresentation(user.get(), realm);
     }
 
     @Override
     public UserModel getUserByEmail(String email, RealmModel realm) {
-        return null;
+        Optional<User> user = userDAO.findUserByEmail(email);
+
+        if (user.isEmpty())
+            return null;
+
+        return getUserRepresentation(user.get(), realm);
     }
 
     @Override
     public int getUsersCount(RealmModel realm) {
         logger.info("getUsersCount({})", realm);
-        return 0;
+        return userDAO.count().intValue();
     }
 
     @Override
     public List<UserModel> getUsers(RealmModel realm) {
-        return null;
+        logger.info("getUsers({})", realm);
+        return userDAO
+                .findAll()
+                .stream()
+                .map(user -> getUserRepresentation(user, realm))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<UserModel> getUsers(RealmModel realm, int firstResult, int maxResults) {
-        return null;
+        logger.info("getUsers({}, {}, {})", realm, firstResult, maxResults);
+        return userDAO
+                .findAll(firstResult, maxResults)
+                .stream()
+                .map(user -> getUserRepresentation(user, realm))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<UserModel> searchForUser(String search, RealmModel realm) {
-        return null;
+        logger.info("searchForUser({}, {})", search, realm);
+        return userDAO
+                .searchUserByUserNameOrEmail(search)
+                .stream()
+                .map(user -> getUserRepresentation(user, realm))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<UserModel> searchForUser(String search, RealmModel realm, int firstResult, int maxResults) {
-        return null;
+        logger.info("searchForUser({}, {}, {}, {})", search, realm, firstResult, maxResults);
+        return userDAO
+                .searchUserByUserNameOrEmail(search, firstResult, maxResults)
+                .stream()
+                .map(user -> getUserRepresentation(user, realm))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<UserModel> searchForUser(Map<String, String> params, RealmModel realm) {
-        return null;
+        //Não será usado
+        return new ArrayList<>();
     }
 
     @Override
     public List<UserModel> searchForUser(Map<String, String> params, RealmModel realm, int firstResult, int maxResults) {
-        return null;
+        //Não será usado
+        return new ArrayList<>();
     }
 
     @Override
@@ -182,13 +221,24 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     }
 
     @Override
-    public UserModel addUser(RealmModel realm, String username) {
-        return null;
+    public UserModel addUser(RealmModel realm, String userName) {
+        logger.info("addUser({}, {})", realm, userName);
+        User user = new User();
+        user.setUserName(userName);
+        user = userDAO.create(user);
+        return getUserRepresentation(user, realm);
     }
 
     @Override
-    public boolean removeUser(RealmModel realm, UserModel user) {
-        return false;
+    public boolean removeUser(RealmModel realm, UserModel userModel) {
+        logger.info("removeUser({}, {})", realm, userModel);
+        Optional<User> user = userDAO.findUserById(StorageId.externalId(userModel.getId()));
+
+        if (user.isEmpty())
+            return false;
+
+        userDAO.remove(user.get());
+        return true;
     }
 
     private String getPassword(UserModel user) {

@@ -1,19 +1,18 @@
-package valemobi.auth.representations;
+package com.valemobi.auth.representations;
 
 import org.keycloak.component.ComponentModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.storage.StorageId;
 import org.keycloak.storage.adapter.AbstractUserAdapterFederatedStorage;
-import valemobi.auth.dao.IUserDAO;
-import valemobi.auth.model.User;
+import com.valemobi.auth.dao.IUserDAO;
+import com.valemobi.auth.model.User;
 
 import java.util.List;
-import java.util.Map;
 
 public class KeycloakUserRepresentation extends AbstractUserAdapterFederatedStorage {
     private User user;
-    private IUserDAO userDAO;
+    private final IUserDAO userDAO;
 
     public KeycloakUserRepresentation(
             KeycloakSession session,
@@ -80,7 +79,11 @@ public class KeycloakUserRepresentation extends AbstractUserAdapterFederatedStor
 
     @Override
     public boolean isEmailVerified() {
-        return user.getEmailVerified();
+        if (user == null)
+            return false;
+
+        Boolean emailVerified = user.getEmailVerified();
+        return emailVerified != null && emailVerified;
     }
 
     @Override

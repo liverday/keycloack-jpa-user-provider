@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure>
+    <deployment>
+        <module-alias name="deployment.keycloak-user-postgres-provider"/>
+        <dependencies>
+            <module name="org.apache.commons.lang" />
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>
