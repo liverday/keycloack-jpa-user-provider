@@ -1,7 +1,5 @@
 plugins {
     id 'ear'
-    id 'java'
-    id 'java-library'
 }
 
 repositories {
@@ -9,8 +7,6 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     implementation('org.keycloak:keycloak-core:8.0.1')
     implementation('org.keycloak:keycloak-server-spi:8.0.1')
     implementation('org.keycloak:keycloak-services:8.0.1')
