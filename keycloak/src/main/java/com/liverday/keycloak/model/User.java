@@ -1,4 +1,4 @@
-package com.valemobi.auth.model;
+package com.liverday.keycloak.model;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

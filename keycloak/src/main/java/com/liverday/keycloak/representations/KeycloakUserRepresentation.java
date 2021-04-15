@@ -1,12 +1,12 @@
-package com.valemobi.auth.representations;
+package com.liverday.keycloak.representations;
 
 import org.keycloak.component.ComponentModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.storage.StorageId;
 import org.keycloak.storage.adapter.AbstractUserAdapterFederatedStorage;
-import com.valemobi.auth.dao.IUserDAO;
-import com.valemobi.auth.model.User;
+import com.liverday.keycloak.dao.IUserDAO;
+import com.liverday.keycloak.model.User;
 
 import java.util.List;
 

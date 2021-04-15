@@ -1,4 +1,4 @@
-package com.valemobi.auth.providers.userStorage;
+package com.liverday.keycloak.providers.userStorage;
 
 import org.keycloak.component.ComponentModel;
 import org.keycloak.credential.CredentialInput;
@@ -14,9 +14,9 @@ import org.keycloak.storage.user.UserQueryProvider;
 import org.keycloak.storage.user.UserRegistrationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.valemobi.auth.dao.IUserDAO;
-import com.valemobi.auth.model.User;
-import com.valemobi.auth.representations.KeycloakUserRepresentation;
+import com.liverday.keycloak.dao.IUserDAO;
+import com.liverday.keycloak.model.User;
+import com.liverday.keycloak.representations.KeycloakUserRepresentation;
 
 import java.util.*;
 import java.util.stream.Collectors;

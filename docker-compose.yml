@@ -6,7 +6,17 @@ networks:
       name: keycloak-net
 
 services:
-  postgres:
+  users_postgres:
+    image: postgres:9.6
+    environment:
+      POSTGRES_PASSWORD: p0stgr3s
+    ports:
+      - "5433:5432"
+    volumes:
+      - ~/postgres/data:/var/lib/postgresql/data
+    networks:
+      - keycloak
+  keycloak_postgres:
     image: postgres:9.6
     environment:
       POSTGRES_PASSWORD: p0stgr3s
@@ -17,7 +27,7 @@ services:
     networks:
       - keycloak
   keycloak:
-    build: .
+    build: ./keycloak
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: teste123
@@ -32,4 +42,10 @@ services:
     networks:
       - keycloak
     depends_on:
-      - postgres
+      - keycloak_postgres
+  oauth-resource-server:
+    build: ./oauth-resource-server
+    ports:
+      - 8081:8080
+    networks:
+      - keycloak

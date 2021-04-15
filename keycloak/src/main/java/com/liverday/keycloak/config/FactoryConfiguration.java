@@ -1,4 +1,4 @@
-package com.valemobi.auth.config;
+package com.liverday.keycloak.config;
 
 public class FactoryConfiguration {
     // cosntantes para as chaves do formulário de criação de provider

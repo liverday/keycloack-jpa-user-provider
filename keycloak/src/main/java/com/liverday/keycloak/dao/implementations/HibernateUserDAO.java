@@ -1,9 +1,9 @@
-package com.valemobi.auth.dao.implementations;
+package com.liverday.keycloak.dao.implementations;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.valemobi.auth.dao.IUserDAO;
-import com.valemobi.auth.model.User;
+import com.liverday.keycloak.dao.IUserDAO;
+import com.liverday.keycloak.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;

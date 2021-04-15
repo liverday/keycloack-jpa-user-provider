@@ -1,6 +1,6 @@
-package com.valemobi.auth.dao;
+package com.liverday.keycloak.dao;
 
-import com.valemobi.auth.model.User;
+import com.liverday.keycloak.model.User;
 
 import javax.persistence.EntityManager;
 import java.util.List;

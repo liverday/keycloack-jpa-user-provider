@@ -1,2 +1,4 @@
 rootProject.name = 'keycloak-jpa-user-provider'
+include 'keycloak'
+include 'oauth-resource-server'
 
