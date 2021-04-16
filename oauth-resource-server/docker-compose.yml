@@ -1,0 +1,14 @@
+version: '3'
+
+networks:
+  keycloak:
+    external:
+      name: keycloak-net
+
+services:
+  oauth-resource-server:
+    build: .
+    ports:
+      - 8081:8080
+    networks:
+      - keycloak

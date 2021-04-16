@@ -1,6 +1,5 @@
-FROM openjdk:14-alpine
+FROM dperezcabrera/openjdk11-alpine
 ENV TZ America/Sao_Paulo
 
-WORKDIR /app/
-COPY build/libs/*.jar ./app.jar
+COPY ./build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]

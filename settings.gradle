@@ -1,4 +1,5 @@
 rootProject.name = 'keycloak-spring-oauth'
 include 'keycloak'
 include 'oauth-resource-server'
+include 'web-app'
 

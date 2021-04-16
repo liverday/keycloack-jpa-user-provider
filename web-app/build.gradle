@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'java-library'
-    id "io.freefair.lombok" version "4.1.6"
+    id 'io.freefair.lombok' version "4.1.6"
     id 'org.springframework.boot' version '2.4.5'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
@@ -28,8 +28,12 @@ apply plugin: 'io.spring.dependency-management'
 
 dependencies {
     bundleLib 'org.springframework.boot:spring-boot-starter-web'
-    bundleLib 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    bundleLib 'org.springframework:spring-webflux'
+    bundleLib 'org.springframework.boot:spring-boot-starter-thymeleaf'
     bundleLib 'org.springframework.boot:spring-boot-starter-security'
+    bundleLib 'org.springframework.security:spring-security-oauth2-client'
+    bundleLib 'org.springframework.security:spring-security-oauth2-jose'
+    bundleLib 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 
     implementation('org.projectlombok:lombok:1.18.10')
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
@@ -42,10 +46,11 @@ dependencies {
 }
 
 bootJar {
-    enabled = true
+    enabled = false
 }
 
 jar {
+    enabled = true
     from {
         configurations.bundleLib.collect { it.isDirectory() ? it : zipTree(it) }
     }
