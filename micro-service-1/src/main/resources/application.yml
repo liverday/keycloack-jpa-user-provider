@@ -1,0 +1,19 @@
+server:
+  port: 8081
+
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web: DEBUG
+        autoconfigure: DEBUG
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/auth/realms/custom
+          jwk-set-uri: http://localhost:8080/auth/realms/custom/protocol/openid-connect/certs

@@ -30,3 +30,7 @@ out/
 ### VS Code ###
 .vscode/
 bin/
+
+### DB Data ###
+postgres-data
+keycloak-postgres-data

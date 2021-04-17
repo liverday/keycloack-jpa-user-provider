@@ -9,17 +9,25 @@ spring:
     oauth2:
       client:
         registration:
-          keycloak:
-            client-id: myclient
-            client-secret: 5619969e-6b62-4219-889e-7bf22b3b6b76
-            clientName: Keycloak
+          login-client:
+            provider: keycloak
+            client-id: login-client
+            client-authenticate-method: none
             authorization-grant-type: authorization_code
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
             scope:
               - openid
               - profile
               - email
-
+          client-micro-service-foo:
+            provider: keycloak
+            client-id: micro-service-foo
+            client-secret: 60a99946-6bb9-4c1a-8e1e-52a2c1bb695a
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/foos"
+            scope:
+              - foos:read
+              - foos:write
         provider:
           keycloak:
             authorization-uri: http://localhost:8080/auth/realms/custom/protocol/openid-connect/auth
@@ -27,3 +35,8 @@ spring:
             user-info-uri: http://localhost:8080/auth/realms/custom/protocol/openid-connect/userinfo
             jwk-set-uri: http://localhost:8080/auth/realms/custom/protocol/openid-connect/certs
             user-name-attribute: preferred_username
+oauth2:
+  resource:
+    services:
+      client-micro-service-foo:
+        uri: http://localhost:8081/foos

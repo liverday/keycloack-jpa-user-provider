@@ -23,6 +23,7 @@ services:
       POSTGRES_PASSWORD: p0stgr3s
     volumes:
       - ./script/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./keycloak-postgres-data:/var/lib/postgres/data
     ports:
       - "5432:5432"
     networks:
