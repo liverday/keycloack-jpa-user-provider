@@ -1,5 +1,6 @@
 package com.liverday.keycloak.representations;
 
+import lombok.ToString;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -7,12 +8,16 @@ import org.keycloak.storage.StorageId;
 import org.keycloak.storage.adapter.AbstractUserAdapterFederatedStorage;
 import com.liverday.keycloak.dao.IUserDAO;
 import com.liverday.keycloak.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+@ToString
 public class KeycloakUserRepresentation extends AbstractUserAdapterFederatedStorage {
     private User user;
     private final IUserDAO userDAO;
+    private final Logger logger = LoggerFactory.getLogger(KeycloakUserRepresentation.class);
 
     public KeycloakUserRepresentation(
             KeycloakSession session,
@@ -93,14 +98,53 @@ public class KeycloakUserRepresentation extends AbstractUserAdapterFederatedStor
     }
 
     @Override
+    public void setSingleAttribute(String name, String value) {
+        logger.info("KeycloakUserRepresentation#setSingleAttribute({}, {})", name, value);
+        super.setSingleAttribute(name, value);
+    }
+
+    @Override
+    public String getFirstAttribute(String name) {
+        logger.info("KeycloakUserRepresentation#getFirstAttribute({})", name);
+        return super.getFirstAttribute(name);
+    }
+
+    @Override
     public void removeAttribute(String name) {
+        logger.info("KeycloakUserRepresentation#removeAttribute({})", name);
         super.removeAttribute(name);
+        switch(name) {
+            case FIRST_NAME:
+                user.setFirstName(null);
+                break;
+            case LAST_NAME:
+                user.setLastName(null);
+                break;
+            case EMAIL:
+                user.setEmail(null);
+                break;
+            default:
+                super.removeAttribute(name);
+        }
         user = userDAO.update(user);
     }
 
     @Override
     public void setAttribute(String name, List<String> values) {
-        super.setAttribute(name, values);
+        logger.info("KeycloakUserRepresentation#setAttribute({}, {})", name, values);
+        switch(name) {
+            case FIRST_NAME:
+                user.setFirstName(values.get(0));
+                break;
+            case LAST_NAME:
+                user.setLastName(values.get(0));
+                break;
+            case EMAIL:
+                user.setEmail(values.get(0));
+                break;
+            default:
+                super.setAttribute(name, values);
+        }
         user = userDAO.update(user);
     }
 

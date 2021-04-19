@@ -43,7 +43,9 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     @Override
     public boolean supportsCredentialType(String credentialType) {
         logger.info("supportCredentialsType({})", credentialType);
-        return PasswordCredentialModel.TYPE.equals(credentialType);
+        boolean result = PasswordCredentialModel.TYPE.equals(credentialType);
+        logger.info("supportCredentialsType result: {}", result);
+        return result;
     }
 
     @Override
@@ -69,10 +71,15 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     @Override
     public boolean updateCredential(RealmModel realm, UserModel userModel, CredentialInput input) {
         logger.info("updateCredential({}, {}, {})", realm, userModel, input);
-        if (!supportsCredentialType(input.getType()) || !(input instanceof UserCredentialModel))
+        if (!supportsCredentialType(input.getType()))
             return false;
 
-        User user = new User().setUserName(userModel.getUsername());
+        if (!(userModel instanceof UserCredentialModel))
+            return false;
+
+        User user = new User()
+                .setId(UUID.fromString(userModel.getId()))
+                .setUserName(userModel.getUsername());
         user.setPassword(input.getChallengeResponse());
         userDAO.update(user);
         return true;
@@ -119,8 +126,8 @@ public class CustomUserStorageProvider implements UserStorageProvider,
 
     @Override
     public UserModel getUserById(String keycloakId, RealmModel realm) {
-        logger.info("getUserById({}, {})", keycloakId, realm);
         String id = StorageId.externalId(keycloakId);
+        logger.info("getUserById({}, {})", id, realm);
         Optional<User> user = userDAO.findUserById(id);
         if (user.isEmpty())
             return null;

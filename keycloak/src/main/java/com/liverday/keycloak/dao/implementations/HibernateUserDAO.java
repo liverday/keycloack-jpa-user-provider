@@ -94,6 +94,7 @@ public class HibernateUserDAO implements IUserDAO {
 
     @Override
     public User create(User user) {
+        logger.info("HibernateUserDAO#create({})", user);
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
 
@@ -109,6 +110,7 @@ public class HibernateUserDAO implements IUserDAO {
 
     @Override
     public void remove(User user) {
+        logger.info("HibernateUserDAO#remove({})", user);
         EntityTransaction transaction = em.getTransaction();
 
         try {
@@ -121,6 +123,7 @@ public class HibernateUserDAO implements IUserDAO {
 
     @Override
     public User update(User user) {
+        logger.info("HibernateUserDAO#update({})", user);
         EntityTransaction transaction = em.getTransaction();
         User updatedUser = null;
 
