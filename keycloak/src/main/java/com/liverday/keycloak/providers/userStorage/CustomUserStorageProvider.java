@@ -77,11 +77,16 @@ public class CustomUserStorageProvider implements UserStorageProvider,
         if (!(userModel instanceof UserCredentialModel))
             return false;
 
-        User user = new User()
+        Optional<User> user = userDAO.findUserById(userModel.getId());
+
+        if (user.isEmpty())
+            return false;
+
+        user.get()
                 .setId(UUID.fromString(userModel.getId()))
-                .setUserName(userModel.getUsername());
-        user.setPassword(input.getChallengeResponse());
-        userDAO.update(user);
+                .setUserName(userModel.getUsername())
+                .setPassword(input.getChallengeResponse());
+        userDAO.update(user.get());
         return true;
     }
 
@@ -92,7 +97,8 @@ public class CustomUserStorageProvider implements UserStorageProvider,
             return;
 
         getUserRepresentation(userModel).setPassword(null);
-;    }
+        ;
+    }
 
     private KeycloakUserRepresentation getUserRepresentation(UserModel userModel) {
         KeycloakUserRepresentation userRepresentation = null;

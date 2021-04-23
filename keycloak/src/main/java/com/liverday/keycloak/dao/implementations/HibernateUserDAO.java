@@ -99,6 +99,7 @@ public class HibernateUserDAO implements IUserDAO {
         transaction.begin();
 
         try {
+
             em.persist(user);
             transaction.commit();
         } catch (Exception e) {
@@ -112,7 +113,7 @@ public class HibernateUserDAO implements IUserDAO {
     public void remove(User user) {
         logger.info("HibernateUserDAO#remove({})", user);
         EntityTransaction transaction = em.getTransaction();
-
+        transaction.begin();
         try {
             em.remove(user);
             transaction.commit();
@@ -126,6 +127,7 @@ public class HibernateUserDAO implements IUserDAO {
         logger.info("HibernateUserDAO#update({})", user);
         EntityTransaction transaction = em.getTransaction();
         User updatedUser = null;
+        transaction.begin();
 
         try {
             updatedUser = em.merge(user);
@@ -133,6 +135,8 @@ public class HibernateUserDAO implements IUserDAO {
         } catch (Exception e) {
             transaction.rollback();
         }
+
+        logger.info("HibernateUserDAO#update({}) result: {}", user, updatedUser);
 
         return updatedUser;
     }

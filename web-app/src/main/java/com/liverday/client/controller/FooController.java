@@ -31,7 +31,7 @@ public class FooController extends AbstractController {
         super(servicesConfigFactory, webClient);
     }
 
-    @GetMapping("/")
+    @GetMapping
     public String index(
             Model model,
             @RegisteredOAuth2AuthorizedClient("client-micro-service-foo") OAuth2AuthorizedClient authorizedClient,
