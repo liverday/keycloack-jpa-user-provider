@@ -36,7 +36,7 @@ import static com.liverday.keycloak.config.FactoryConfiguration.DB_PASSWORD_KEY;
 import static com.liverday.keycloak.config.FactoryConfiguration.DB_CONNECTION_NAME_KEY;
 
 @JBossLog
-public class CustomUserStorageProviderFactory implements UserStorageProviderFactory<CustomUserStorageProvider> {
+public class CustomUserStorageProviderFactory implements UserStorageProviderFactory<HibernateUserStorageProvider> {
     Map<String, Object> properties;
     Map<String, EntityManagerFactory> entityManagerFactories = new HashMap<>();
     Logger logger = LoggerFactory.getLogger(CustomUserStorageProviderFactory.class);
@@ -96,7 +96,7 @@ public class CustomUserStorageProviderFactory implements UserStorageProviderFact
     }
 
     @Override
-    public CustomUserStorageProvider create(KeycloakSession session, ComponentModel model) {
+    public HibernateUserStorageProvider create(KeycloakSession session, ComponentModel model) {
         properties = new HashMap<>();
 
         MultivaluedHashMap<String, String> config = model.getConfig();
@@ -123,7 +123,7 @@ public class CustomUserStorageProviderFactory implements UserStorageProviderFact
             entityManagerFactories.put(dbConnectionName, entityManagerFactory);
         }
 
-        return new CustomUserStorageProvider(session, model, new HibernateUserDAO(entityManagerFactory.createEntityManager()));
+        return new HibernateUserStorageProvider(session, model, new HibernateUserDAO(entityManagerFactory.createEntityManager()));
     }
 
     @Override

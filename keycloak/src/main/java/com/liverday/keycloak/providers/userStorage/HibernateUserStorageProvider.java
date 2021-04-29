@@ -21,7 +21,7 @@ import com.liverday.keycloak.representations.KeycloakUserRepresentation;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CustomUserStorageProvider implements UserStorageProvider,
+public class HibernateUserStorageProvider implements UserStorageProvider,
         UserLookupProvider,
         UserRegistrationProvider,
         UserQueryProvider,
@@ -32,9 +32,9 @@ public class CustomUserStorageProvider implements UserStorageProvider,
     private final ComponentModel model;
     private final IUserDAO userDAO;
 
-    Logger logger = LoggerFactory.getLogger(CustomUserStorageProvider.class);
+    Logger logger = LoggerFactory.getLogger(HibernateUserStorageProvider.class);
 
-    public CustomUserStorageProvider(KeycloakSession session, ComponentModel model, IUserDAO userDAO) {
+    public HibernateUserStorageProvider(KeycloakSession session, ComponentModel model, IUserDAO userDAO) {
         this.session = session;
         this.model = model;
         this.userDAO = userDAO;
@@ -87,6 +87,7 @@ public class CustomUserStorageProvider implements UserStorageProvider,
                 .setUserName(userModel.getUsername())
                 .setPassword(input.getChallengeResponse());
         userDAO.update(user.get());
+
         return true;
     }
 
